@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const {MongoClient, ServerApiVersion} = require("mongodb");
+const {MongoClient, ServerApiVersion, ObjectId} = require("mongodb");
 const cors = require("cors");
 app.use(cors());
 app.use(express.json());
@@ -19,8 +19,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
-
     const database = client.db("allBooks");
     const collection = database.collection("allBook");
 
@@ -28,7 +26,6 @@ async function run() {
       const allBook = await collection.find().toArray();
       res.send(allBook);
     });
-
     app.get("/sorted", async (req, res) => {
       const sorted = await collection
         .find({upvote: {$gt: 0}})
@@ -36,6 +33,23 @@ async function run() {
         .limit(6)
         .toArray();
       res.send(sorted);
+    });
+
+    app.get("/bookDetails/:id", async (req, res) => {
+      const {id} = req.params;
+      const bookDetails = await collection.findOne({_id: new ObjectId(id)});
+      res.send(bookDetails);
+    });
+
+    app.patch("/upvote/:id", async (req, res) => {
+      const {id} = req.params;
+      const upvotes = await collection.findOne(
+        {_id: new ObjectId(id)},
+        {
+          $inc: {upvote: 1},
+        }
+      );
+      res.send(upvotes);
     });
 
     await client.db("admin").command({ping: 1});
@@ -51,6 +65,7 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
   res.send("backend is walking");
 });
+
 app.listen(port, () => {
   console.log("port", port, "is running");
 });

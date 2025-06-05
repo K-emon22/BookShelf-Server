@@ -2,9 +2,9 @@
   "name": "hero-pro-assignment-11-backend",
   "version": "1.0.0",
   "description": "Backend server for CRUD operations using Express and MongoDB",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "index.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],
