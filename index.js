@@ -43,13 +43,15 @@ async function run() {
 
     app.patch("/upvote/:id", async (req, res) => {
       const {id} = req.params;
-      const upvotes = await collection.findOne(
+      const result = await collection.updateOne(
         {_id: new ObjectId(id)},
-        {
-          $inc: {upvote: 1},
-        }
+        {$inc: {upvote: 1}}
       );
-      res.send(upvotes);
+
+      if (result.modifiedCount > 0) {
+        const updatedDoc = await collection.findOne({_id: new ObjectId(id)});
+        res.send(updatedDoc);
+      }
     });
 
     await client.db("admin").command({ping: 1});
