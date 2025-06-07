@@ -68,6 +68,19 @@ async function run() {
       res.send(addedRev);
     });
 
+    app.put("/review/:id", async (req, res) => {
+      const review = req.body;
+      const {id} = req.params;
+      const addedRev = await reviewCollection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: review}
+      );
+      if (addedRev.modifiedCount > 0) {
+        const refreshedReview = await reviewCollection.findOne(addedRev);
+        res.send(refreshedReview);
+      }
+    });
+
     app.delete("/review/:id", async (req, res) => {
       const {id} = req.params;
       const deleteRev = await reviewCollection.deleteOne({
