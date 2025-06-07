@@ -21,10 +21,16 @@ async function run() {
   try {
     const database = client.db("allBooks");
     const collection = database.collection("allBook");
+    const reviewCollection = database.collection("review");
 
     app.get("/allBooks", async (req, res) => {
       const allBook = await collection.find().toArray();
       res.send(allBook);
+    });
+
+    app.get("/review", async (req, res) => {
+      const AllReview = await reviewCollection.find().toArray();
+      res.send(AllReview);
     });
     app.get("/sorted", async (req, res) => {
       const sorted = await collection
@@ -48,9 +54,27 @@ async function run() {
         {$inc: {upvote: 1}}
       );
 
-      if (result.modifiedCount > 0) {
+      if (result) {
         const updatedDoc = await collection.findOne({_id: new ObjectId(id)});
         res.send(updatedDoc);
+      }
+    });
+
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+
+      const addedRev = await reviewCollection.insertOne(review);
+
+      res.send(addedRev);
+    });
+
+    app.delete("/review/:id", async (req, res) => {
+      const {id} = req.params;
+      const deleteRev = await reviewCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+      if (deleteRev) {
+        res.send({message: "Deleted successfully"});
       }
     });
 
