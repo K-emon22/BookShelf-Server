@@ -76,7 +76,7 @@ async function run() {
         {$set: review}
       );
       if (addedRev.modifiedCount > 0) {
-        const refreshedReview = await reviewCollection.findOne(addedRev);
+        const refreshedReview = await reviewCollection.findOne({_id:new ObjectId});
         res.send(refreshedReview);
       }
     });
