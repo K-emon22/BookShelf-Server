@@ -27,6 +27,11 @@ async function run() {
       const allBook = await collection.find().toArray();
       res.send(allBook);
     });
+    app.post("/allBooks", async (req, res) => {
+      const book = req.body;
+      const allBook = await collection.insertOne(book);
+      res.send(allBook);
+    });
 
     app.get("/review", async (req, res) => {
       const AllReview = await reviewCollection.find().toArray();
@@ -76,7 +81,9 @@ async function run() {
         {$set: review}
       );
       if (addedRev.modifiedCount > 0) {
-        const refreshedReview = await reviewCollection.findOne({_id:new ObjectId});
+        const refreshedReview = await reviewCollection.findOne({
+          _id: new ObjectId(),
+        });
         res.send(refreshedReview);
       }
     });
