@@ -33,6 +33,35 @@ async function run() {
       res.send(allBook);
     });
 
+    app.put("/allBooks/:id", async (req, res) => {
+      const body = req.body;
+      const {id} = req.params;
+      const book = await collection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: body}
+      );
+      if (book) {
+        const updatedBook = await collection.findOne({
+          _id: new ObjectId(id),
+        });
+        res.send(updatedBook);
+      }
+    });
+
+
+
+
+
+
+    app.delete("/allBooks/:id", async (req, res) => {
+      const {id} = req.params;
+      const deleteBook = await collection.deleteOne({_id: new ObjectId(id)});
+
+      if (deleteBook) {
+        res.send({message: "Deleted successfully"});
+      }
+    });
+
     app.get("/review", async (req, res) => {
       const AllReview = await reviewCollection.find().toArray();
       res.send(AllReview);
@@ -82,7 +111,7 @@ async function run() {
       );
       if (addedRev.modifiedCount > 0) {
         const refreshedReview = await reviewCollection.findOne({
-          _id: new ObjectId(),
+          _id: new ObjectId(id),
         });
         res.send(refreshedReview);
       }
