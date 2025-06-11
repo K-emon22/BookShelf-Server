@@ -48,11 +48,6 @@ async function run() {
       }
     });
 
-
-
-
-
-
     app.delete("/allBooks/:id", async (req, res) => {
       const {id} = req.params;
       const deleteBook = await collection.deleteOne({_id: new ObjectId(id)});
