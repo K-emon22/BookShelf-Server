@@ -1,14 +1,13 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 const {MongoClient, ServerApiVersion, ObjectId} = require("mongodb");
 const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 const port = 3000;
 
-const uri =
-  "mongodb+srv://emonsheikhkhalid2:1RwfmEIHE2FxsBna@bookshelf.bpdctut.mongodb.net/?retryWrites=true&w=majority&appName=bookShelf";
-
+const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -78,7 +77,7 @@ async function run() {
 
     app.patch("/bookDetails/:id", async (req, res) => {
       const {id} = req.params;
-const { reading_status: newStatus } = req.body;
+      const {reading_status: newStatus} = req.body;
       const result = await collection.updateOne(
         {_id: new ObjectId(id)},
         {$set: {reading_status: newStatus}}
