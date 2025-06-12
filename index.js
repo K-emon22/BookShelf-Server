@@ -76,6 +76,19 @@ async function run() {
       res.send(bookDetails);
     });
 
+    app.patch("/bookDetails/:id", async (req, res) => {
+      const {id} = req.params;
+const { reading_status: newStatus } = req.body;
+      const result = await collection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: {reading_status: newStatus}}
+      );
+      if (result) {
+        const updateStatus = await collection.findOne({_id: new ObjectId(id)});
+        res.send(updateStatus);
+      }
+    });
+
     app.patch("/upvote/:id", async (req, res) => {
       const {id} = req.params;
       const result = await collection.updateOne(
