@@ -1,12 +1,48 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const {MongoClient, ServerApiVersion, ObjectId} = require("mongodb");
-const cors = require("cors");
-app.use(cors());
-app.use(express.json());
-const port = 3000;
+const {MongoClient, ServerApiVersion, ObjectId, } = require("mongodb");
 
+const admin = require("firebase-admin");
+
+
+
+
+
+
+const cors = require("cors");
+
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://emons-bookshelf.netlify.app",
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+
+
+
+
+
+
+
+
+
+
+
+
+app.use(express.json());
+
+const port = 3000;
+const serviceAccount = require("./jot.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, {
   serverApi: {
@@ -15,6 +51,40 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+
+//
+//
+//
+//
+//
+
+const verifyFBtoken = async (req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+  const authHeader = req.headers?.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).send({message: "unauthorized access"});
+  }
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = await admin.auth().verifyIdToken(token);
+    req.decoded = decoded;
+
+    next();
+  } catch (error) {
+    console.error("Token verification failed:", error.message);
+    return res.status(401).send({message: "unauthorized access"});
+  }
+};
+
+//
+//
+//
+//
+//
 
 async function run() {
   try {
@@ -26,11 +96,51 @@ async function run() {
       const allBook = await collection.find().toArray();
       res.send(allBook);
     });
-    app.post("/allBooks", async (req, res) => {
-      const book = req.body;
-      const allBook = await collection.insertOne(book);
-      res.send(allBook);
+
+
+
+
+
+    // app.post("/allBooks", async (req, res) => {
+    //   const book = req.body;
+    //   const allBook = await collection.insertOne(book);
+    //   res.send(allBook);
+    // });
+
+
+
+
+
+ app.post("/allBooks", verifyFBtoken, async (req, res) => {
+      const decodedEmail = req.decoded.email;
+      const queryEmail = req.query.email;
+
+      if (!decodedEmail || !queryEmail) {
+        return res.status(401).send({message: "Unauthorized: Missing email"});
+      }
+
+      if (decodedEmail !== queryEmail) {
+        return res.status(403).send({message: "Forbidden: Email mismatch"});
+      }
+
+      
+
+
+
+
+
+const book = req.body;
+  const result = await collection.insertOne(book);
+  res.send({message: "Book added successfully ✅", result});
+
+
     });
+
+
+
+
+
+
 
     app.put("/allBooks/:id", async (req, res) => {
       const body = req.body;
@@ -45,6 +155,45 @@ async function run() {
         });
         res.send(updatedBook);
       }
+    });
+
+    app.get("/userBook", verifyFBtoken, async (req, res) => {
+      const decodedEmail = req.decoded.email;
+      const queryEmail = req.query.email;
+
+      if (!decodedEmail || !queryEmail) {
+        return res.status(401).send({message: "Unauthorized: Missing email"});
+      }
+
+      if (decodedEmail !== queryEmail) {
+        return res.status(403).send({message: "Forbidden: Email mismatch"});
+      }
+
+      const myBook = await collection
+        .find({"user.email": queryEmail})
+        .toArray();
+
+      res.send({
+        message: "JWT data fetched successfully ✅",
+        myBook,
+      });
+    });
+
+    app.get("/alldata", verifyFBtoken, async (req, res) => {
+      const decodedEmail = req.decoded.email;
+      const queryEmail = req.query.email;
+      if (!decodedEmail || !queryEmail) {
+        return res.status(401).send({message: "Unauthorized: Missing email"});
+      }
+
+      if (decodedEmail !== queryEmail) {
+        return res.status(403).send({message: "Forbidden: Email mismatch"});
+      }
+      const allBook = await collection.find().toArray();
+      res.send({
+        message: "JWT data fetched successfully ✅",
+        allBook,
+      });
     });
 
     app.delete("/allBooks/:id", async (req, res) => {
@@ -102,6 +251,8 @@ async function run() {
     });
 
     app.post("/review", async (req, res) => {
+      console.log("hsdfbklaweghfkjshf");
+
       const review = req.body;
 
       const addedRev = await reviewCollection.insertOne(review);
