@@ -1,39 +1,26 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const {MongoClient, ServerApiVersion, ObjectId, } = require("mongodb");
+const {MongoClient, ServerApiVersion, ObjectId} = require("mongodb");
 
 const admin = require("firebase-admin");
-
-
-
-
-
 
 const cors = require("cors");
 
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://emons-bookshelf.netlify.app",
-  ],
+  origin: ["http://localhost:5173", "https://emons-bookshelf.netlify.app"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+  allowedHeaders: [
+    "Origin",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "Authorization",
+  ],
 };
 
 app.use(cors(corsOptions));
-
-
-
-
-
-
-
-
-
-
-
 
 app.use(express.json());
 
@@ -100,22 +87,12 @@ async function run() {
 
 
 
-
-    // app.post("/allBooks", async (req, res) => {
-    //   const book = req.body;
-    //   const allBook = await collection.insertOne(book);
-    //   res.send(allBook);
-    // });
-
-
-
-
-
- app.post("/allBooks", verifyFBtoken, async (req, res) => {
+    
+    app.post("/allBooks", verifyFBtoken, async (req, res) => {
       const decodedEmail = req.decoded.email;
       const queryEmail = req.query.email;
 
-      if (!decodedEmail || !queryEmail) {
+      if (!decodedEmail) {
         return res.status(401).send({message: "Unauthorized: Missing email"});
       }
 
@@ -123,20 +100,10 @@ async function run() {
         return res.status(403).send({message: "Forbidden: Email mismatch"});
       }
 
-      
-
-
-
-
-
-const book = req.body;
-  const result = await collection.insertOne(book);
-  res.send({message: "Book added successfully ✅", result});
-
-
+      const book = req.body;
+      const result = await collection.insertOne(book);
+      res.send({message: "Book added successfully ✅", result});
     });
-
-
 
 
 
