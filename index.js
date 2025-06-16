@@ -39,12 +39,6 @@ const client = new MongoClient(uri, {
   },
 });
 
-//
-//
-//
-//
-//
-
 const verifyFBtoken = async (req, res, next) => {
   if (req.method === "OPTIONS") {
     return next();
@@ -67,12 +61,6 @@ const verifyFBtoken = async (req, res, next) => {
   }
 };
 
-//
-//
-//
-//
-//
-
 async function run() {
   try {
     const database = client.db("allBooks");
@@ -84,10 +72,6 @@ async function run() {
       res.send(allBook);
     });
 
-
-
-
-    
     app.post("/allBooks", verifyFBtoken, async (req, res) => {
       const decodedEmail = req.decoded.email;
       const queryEmail = req.query.email;
@@ -104,10 +88,6 @@ async function run() {
       const result = await collection.insertOne(book);
       res.send({message: "Book added successfully ✅", result});
     });
-
-
-
-
 
     app.put("/allBooks/:id", async (req, res) => {
       const body = req.body;
