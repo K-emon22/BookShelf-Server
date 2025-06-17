@@ -8,7 +8,11 @@ const admin = require("firebase-admin");
 const cors = require("cors");
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "https://emons-bookshelf.netlify.app"],
+  origin: [
+    "http://localhost:5173",
+    "https://emons-bookshelf.netlify.app",
+    "http://localhost:5174",
+  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: [
