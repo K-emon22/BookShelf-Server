@@ -1,7 +1,4 @@
 
-⸻
-
-
 <div >
 
 # 📚 Bookshelf Backend API  
