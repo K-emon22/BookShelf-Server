@@ -2,7 +2,7 @@
 ⸻
 
 
-<div align="center">
+<div >
 
 # 📚 Bookshelf Backend API  
 _Your personal reading tracker & book review manager_
