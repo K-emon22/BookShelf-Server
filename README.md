@@ -163,8 +163,7 @@ DELETE	/review/:id	Delete a review
 🧑‍💻 Author
 
 Md Emon Sheikh
-📧 emon.web.dev@gmail.com
-🌍 Bangladesh
+emonsheikhkhalid2@gmail.com
 
 ⸻
 
