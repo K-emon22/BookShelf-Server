@@ -13,7 +13,7 @@ Built with **Node.js**, **Express**, **MongoDB**, and **Firebase Authentication*
 ## 🔗 Live Project Links
 
 - 🌐 **Client Live Site**: [emons-bookshelf.netlify.app](https://emons-bookshelf.netlify.app)
-- 💻 **Client Repository**: [Bookshelf Client](https://github.com/K-emon22/Bookshelf-Client)
+- 💻 **Client Repository**: [Bookshelf Client](https://github.com/K-emon22/BookShelf.git)
 
 ---
 
