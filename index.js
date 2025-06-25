@@ -41,6 +41,7 @@ const client = new MongoClient(uri, {
     strict: true,
     deprecationErrors: true,
   },
+  
 });
 
 const verifyFBtoken = async (req, res, next) => {
